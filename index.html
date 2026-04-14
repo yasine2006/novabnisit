@@ -1491,6 +1491,61 @@
         .admin-header { flex-direction: column; }
         .stats-row { grid-template-columns: 1fr 1fr; }
     }
+
+    /* ─── LANGUAGE SWITCHER ──────────────────────────────────────────────────── */
+    .lang-switcher {
+        display: flex;
+        gap: 3px;
+        align-items: center;
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        padding: 4px;
+    }
+    .lang-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.25s;
+        letter-spacing: 0.5px;
+        font-family: inherit;
+    }
+    .lang-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .lang-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 10px rgba(108,99,255,0.4); }
+
+    /* ─── RTL SUPPORT (Arabe) ────────────────────────────────────────────────── */
+    html[dir="rtl"] { direction: rtl; }
+    html[dir="rtl"] .nav-inner { flex-direction: row-reverse; }
+    html[dir="rtl"] .nav-links { flex-direction: row-reverse; }
+    html[dir="rtl"] .nav-cta { flex-direction: row-reverse; }
+    html[dir="rtl"] .hero-buttons { flex-direction: row-reverse; }
+    html[dir="rtl"] .hero-stats { flex-direction: row-reverse; }
+    html[dir="rtl"] .about-grid { direction: rtl; }
+    html[dir="rtl"] .about-features { direction: rtl; }
+    html[dir="rtl"] .about-feature { flex-direction: row-reverse; justify-content: flex-end; }
+    html[dir="rtl"] .contact-grid { direction: rtl; }
+    html[dir="rtl"] .contact-item { direction: rtl; }
+    html[dir="rtl"] .footer-grid { direction: rtl; }
+    html[dir="rtl"] .footer-bottom { direction: rtl; flex-direction: row-reverse; }
+    html[dir="rtl"] .form-group label { display: block; text-align: right; }
+    html[dir="rtl"] .form-control { text-align: right; direction: rtl; }
+    html[dir="rtl"] .chat-head { direction: rtl; }
+    html[dir="rtl"] .chat-body { direction: rtl; }
+    html[dir="rtl"] .chat-form .form-group label { text-align: right; }
+    html[dir="rtl"] .section-head { direction: rtl; }
+    html[dir="rtl"] .hero-content { direction: rtl; }
+    html[dir="rtl"] .service-card { direction: rtl; }
+    html[dir="rtl"] .service-features li { direction: rtl; }
+    html[dir="rtl"] .benefit-card { direction: rtl; }
+    html[dir="rtl"] .process-step { direction: rtl; }
+    html[dir="rtl"] .problem-card { direction: rtl; text-align: right; }
+    html[dir="rtl"] .admin-header { flex-direction: row-reverse; }
+    html[dir="rtl"] .export-box { direction: rtl; }
     </style>
 </head>
 <body>
@@ -1500,16 +1555,21 @@
     <div class="nav-inner">
         <a href="#" class="nav-logo">Nova<span>Bnisit</span></a>
         <ul class="nav-links">
-            <li><a href="#about">À propos</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#process">Processus</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li><a href="#about" data-i18n="nav.about">À propos</a></li>
+            <li><a href="#services" data-i18n="nav.services">Services</a></li>
+            <li><a href="#process" data-i18n="nav.process">Processus</a></li>
+            <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
         <div class="nav-cta">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLanguage('fr')" id="lang-fr">FR</button>
+                <button class="lang-btn" onclick="setLanguage('en')" id="lang-en">EN</button>
+                <button class="lang-btn" onclick="setLanguage('ar')" id="lang-ar">AR</button>
+            </div>
             <button class="btn-admin" onclick="showAdminLogin()">
-                <i class="fas fa-lock"></i> Admin
+                <i class="fas fa-lock"></i> <span data-i18n="nav.admin">Admin</span>
             </button>
-            <a href="#contact" class="btn-nav">Audit Gratuit</a>
+            <a href="#contact" class="btn-nav" data-i18n="nav.audit">Audit Gratuit</a>
         </div>
     </div>
 </nav>
@@ -1518,18 +1578,18 @@
 <div class="admin-login-overlay" id="adminLoginOverlay">
     <div class="admin-login-box" style="position:relative;">
         <button class="login-close-btn" onclick="hideAdminLogin()"><i class="fas fa-times"></i></button>
-        <h2>🔐 Connexion Admin</h2>
-        <p class="sub-text">Accédez à votre espace de gestion</p>
+        <h2 data-i18n="login.title">🔐 Connexion Admin</h2>
+        <p class="sub-text" data-i18n="login.sub">Accédez à votre espace de gestion</p>
         <form id="loginForm">
             <div class="form-group">
-                <label>Nom d'utilisateur</label>
+                <label data-i18n="login.user">Nom d'utilisateur</label>
                 <input type="text" id="adminUsername" class="form-control" placeholder="admin" required>
             </div>
             <div class="form-group">
-                <label>Mot de passe</label>
+                <label data-i18n="login.pass">Mot de passe</label>
                 <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="btn-submit" style="margin-top:10px;">
+            <button type="submit" class="btn-submit" style="margin-top:10px;" data-i18n-html="login.btn.html">
                 <i class="fas fa-sign-in-alt"></i> Se connecter
             </button>
         </form>
@@ -1546,40 +1606,40 @@
 
     <div class="hero-content">
         <div class="hero-badge">
-            <i class="fas fa-bolt"></i> Agence Digitale All-in-One · Maroc
+            <i class="fas fa-bolt"></i> <span data-i18n="hero.badge">Agence Digitale All-in-One · Maroc</span>
         </div>
         <h1>
-            <span class="line1">Transformez Votre Business</span>
-            <span class="line2">en Machine à Clients</span>
+            <span class="line1" data-i18n="hero.line1">Transformez Votre Business</span>
+            <span class="line2" data-i18n="hero.line2">en Machine à Clients</span>
         </h1>
-        <p class="hero-sub">
+        <p class="hero-sub" data-i18n="hero.sub">
             Site web professionnel + chatbot intelligent + Google Maps optimisé. La solution complète pour les PME et commerces qui veulent dominer le digital.
         </p>
         <div class="hero-buttons">
             <a href="#contact" class="btn-primary">
-                <i class="fas fa-rocket"></i> Audit Gratuit — Maintenant
+                <i class="fas fa-rocket"></i> <span data-i18n="hero.btn1">Audit Gratuit — Maintenant</span>
             </a>
             <a href="#services" class="btn-outline">
-                <i class="fas fa-play-circle"></i> Nos Services
+                <i class="fas fa-play-circle"></i> <span data-i18n="hero.btn2">Nos Services</span>
             </a>
         </div>
 
         <div class="hero-stats">
             <div class="hero-stat">
-                <span class="hero-stat-num">+150</span>
-                <span class="hero-stat-label">Clients satisfaits</span>
+                <span class="hero-stat-num" data-i18n="hero.stat1.num">+150</span>
+                <span class="hero-stat-label" data-i18n="hero.stat1.label">Clients satisfaits</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat-num">98%</span>
-                <span class="hero-stat-label">Taux de renouvellement</span>
+                <span class="hero-stat-num" data-i18n="hero.stat2.num">98%</span>
+                <span class="hero-stat-label" data-i18n="hero.stat2.label">Taux de renouvellement</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat-num">15j</span>
-                <span class="hero-stat-label">Mise en ligne garantie</span>
+                <span class="hero-stat-num" data-i18n="hero.stat3.num">15j</span>
+                <span class="hero-stat-label" data-i18n="hero.stat3.label">Mise en ligne garantie</span>
             </div>
             <div class="hero-stat">
-                <span class="hero-stat-num">24h</span>
-                <span class="hero-stat-label">Support réactif</span>
+                <span class="hero-stat-num" data-i18n="hero.stat4.num">24h</span>
+                <span class="hero-stat-label" data-i18n="hero.stat4.label">Support réactif</span>
             </div>
         </div>
     </div>
@@ -1590,33 +1650,33 @@
     <div class="container">
         <div class="about-grid">
             <div class="about-text reveal">
-                <div class="section-tag">À propos de NovaBnisit</div>
-                <h2 class="section-title">Votre Partenaire Digital <span class="hl">All-in-One</span></h2>
-                <p>Nous ne sommes pas une agence digitale comme les autres. NovaBnisit se spécialise exclusivement dans les solutions digitales pour <strong style="color:#fff;">petites et moyennes entreprises</strong>, artisans et commerçants.</p>
-                <p>Notre mission : vous apporter des <strong style="color:#fff;">résultats concrets et mesurables</strong> sans jargon technique. Trois services essentiels, une solution complète et abordable.</p>
+                <div class="section-tag" data-i18n="about.tag">À propos de NovaBnisit</div>
+                <h2 class="section-title" data-i18n-html="about.title">Votre Partenaire Digital <span class="hl">All-in-One</span></h2>
+                <p data-i18n-html="about.p1">Nous ne sommes pas une agence digitale comme les autres. NovaBnisit se spécialise exclusivement dans les solutions digitales pour <strong style="color:#fff;">petites et moyennes entreprises</strong>, artisans et commerçants.</p>
+                <p data-i18n-html="about.p2">Notre mission : vous apporter des <strong style="color:#fff;">résultats concrets et mesurables</strong> sans jargon technique. Trois services essentiels, une solution complète et abordable.</p>
                 <div class="about-features">
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Équipe dédiée</div>
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Prix transparent</div>
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Résultats mesurables</div>
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Support 24h/24</div>
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Mise en ligne rapide</div>
-                    <div class="about-feature"><i class="fas fa-check-circle"></i> Sans engagement longue durée</div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f1">Équipe dédiée</span></div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f2">Prix transparent</span></div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f3">Résultats mesurables</span></div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f4">Support 24h/24</span></div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f5">Mise en ligne rapide</span></div>
+                    <div class="about-feature"><i class="fas fa-check-circle"></i> <span data-i18n="about.f6">Sans engagement longue durée</span></div>
                 </div>
             </div>
             <div class="about-visual reveal">
                 <div class="about-cards-stack">
                     <div class="about-card-float main">
                         <div class="main-card-icon">🚀</div>
-                        <div class="main-card-title">Votre Business, Amplifié</div>
-                        <div class="main-card-text">Nous combinons technologie et stratégie pour transformer votre présence digitale en moteur de croissance réel.</div>
+                        <div class="main-card-title" data-i18n="about.card.title">Votre Business, Amplifié</div>
+                        <div class="main-card-text" data-i18n="about.card.text">Nous combinons technologie et stratégie pour transformer votre présence digitale en moteur de croissance réel.</div>
                     </div>
                     <div class="about-card-float stat1">
                         <span class="float-num" style="color:var(--accent);">+150</span>
-                        <span class="float-label">Clients accompagnés</span>
+                        <span class="float-label" data-i18n="about.clients">Clients accompagnés</span>
                     </div>
                     <div class="about-card-float stat2">
                         <span class="float-num" style="color:#ff6b6b;">98%</span>
-                        <span class="float-label">Satisfaction client</span>
+                        <span class="float-label" data-i18n="about.satisfaction">Satisfaction client</span>
                     </div>
                 </div>
             </div>
@@ -1628,33 +1688,33 @@
 <section class="problems" id="problems">
     <div class="container">
         <div class="section-head reveal">
-            <div class="section-tag">Problèmes fréquents</div>
-            <h2 class="section-title">Ces Problèmes Vous <span class="hl">Parlent ?</span></h2>
-            <p class="section-sub">Des milliers de commerces perdent des clients chaque jour pour ces raisons. Nous les résolvons.</p>
+            <div class="section-tag" data-i18n="problems.tag">Problèmes fréquents</div>
+            <h2 class="section-title" data-i18n-html="problems.title">Ces Problèmes Vous <span class="hl">Parlent ?</span></h2>
+            <p class="section-sub" data-i18n="problems.sub">Des milliers de commerces perdent des clients chaque jour pour ces raisons. Nous les résolvons.</p>
         </div>
 
         <div class="problems-grid">
             <div class="problem-card reveal">
                 <span class="problem-icon">🔍</span>
-                <h3>Clients qui vous cherchent… sans vous trouver</h3>
-                <p>Vos clients potentiels consultent Google mais votre commerce n'apparaît pas. Résultat : ils choisissent votre concurrent mieux référencé.</p>
+                <h3 data-i18n="problem1.title">Clients qui vous cherchent… sans vous trouver</h3>
+                <p data-i18n="problem1.text">Vos clients potentiels consultent Google mais votre commerce n'apparaît pas. Résultat : ils choisissent votre concurrent mieux référencé.</p>
             </div>
             <div class="problem-card reveal">
                 <span class="problem-icon">📵</span>
-                <h3>Appels manqués = ventes définitivement perdues</h3>
-                <p>Vos prospects appellent en dehors des horaires. Pas de réponse = client perdu. Sans chatbot, vous travaillez seulement 8h/24.</p>
+                <h3 data-i18n="problem2.title">Appels manqués = ventes définitivement perdues</h3>
+                <p data-i18n="problem2.text">Vos prospects appellent en dehors des horaires. Pas de réponse = client perdu. Sans chatbot, vous travaillez seulement 8h/24.</p>
             </div>
             <div class="problem-card reveal">
                 <span class="problem-icon">💻</span>
-                <h3>Site web obsolète qui ne convertit pas</h3>
-                <p>Votre site existe mais ne génère aucun contact. Il n'est pas responsive, lent, et ne reflète pas la qualité de votre entreprise.</p>
+                <h3 data-i18n="problem3.title">Site web obsolète qui ne convertit pas</h3>
+                <p data-i18n="problem3.text">Votre site existe mais ne génère aucun contact. Il n'est pas responsive, lent, et ne reflète pas la qualité de votre entreprise.</p>
             </div>
         </div>
 
         <div class="problem-cta reveal">
-            <p><strong>Ces problèmes ont une solution précise.</strong> Découvrez comment nous les résolvons pour des centaines d'entreprises comme la vôtre.</p>
+            <p data-i18n-html="problems.cta"><strong>Ces problèmes ont une solution précise.</strong> Découvrez comment nous les résolvons pour des centaines d'entreprises comme la vôtre.</p>
             <a href="#services" class="btn-primary" style="display:inline-flex;">
-                <i class="fas fa-arrow-right"></i> Voir nos solutions
+                <i class="fas fa-arrow-right"></i> <span data-i18n="problems.btn">Voir nos solutions</span>
             </a>
         </div>
     </div>
@@ -1664,54 +1724,54 @@
 <section class="services" id="services">
     <div class="container">
         <div class="section-head reveal">
-            <div class="section-tag">Ce que nous faisons</div>
-            <h2 class="section-title">Notre Pack Digital <span class="hl">3-en-1</span></h2>
-            <p class="section-sub">Trois services complémentaires qui fonctionnent ensemble pour maximiser votre visibilité et vos conversions.</p>
+            <div class="section-tag" data-i18n="services.tag">Ce que nous faisons</div>
+            <h2 class="section-title" data-i18n-html="services.title">Notre Pack Digital <span class="hl">3-en-1</span></h2>
+            <p class="section-sub" data-i18n="services.sub">Trois services complémentaires qui fonctionnent ensemble pour maximiser votre visibilité et vos conversions.</p>
         </div>
 
         <div class="services-grid">
             <div class="service-card reveal">
                 <div class="service-icon-wrap green">🌐</div>
-                <h3>Site Web Professionnel</h3>
+                <h3 data-i18n="s1.title">Site Web Professionnel</h3>
                 <ul class="service-features">
-                    <li><i class="fas fa-check"></i> Site responsive (mobile, tablette, PC)</li>
-                    <li><i class="fas fa-check"></i> Design moderne et sur-mesure</li>
-                    <li><i class="fas fa-check"></i> Optimisé référencement local (SEO)</li>
-                    <li><i class="fas fa-check"></i> Boutons d'appel direct intégrés</li>
-                    <li><i class="fas fa-check"></i> Formation & mise en ligne incluses</li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s1.f1">Site responsive (mobile, tablette, PC)</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s1.f2">Design moderne et sur-mesure</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s1.f3">Optimisé référencement local (SEO)</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s1.f4">Boutons d'appel direct intégrés</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s1.f5">Formation & mise en ligne incluses</span></li>
                 </ul>
-                <div class="service-result">
+                <div class="service-result" data-i18n-html="s1.result">
                     <strong>Résultat :</strong> Votre vitrine digitale 24h/24 qui convertit les visiteurs en clients.
                 </div>
             </div>
 
             <div class="service-card featured reveal">
-                <div class="featured-badge">⭐ Populaire</div>
+                <div class="featured-badge" data-i18n="s2.badge">⭐ Populaire</div>
                 <div class="service-icon-wrap purple">🤖</div>
-                <h3>Chatbot Intelligent  & Site</h3>
+                <h3 data-i18n="s2.title">Chatbot Intelligent & Site</h3>
                 <ul class="service-features">
-                    <li><i class="fas fa-check"></i> Répond automatiquement 24h/24</li>
-                    <li><i class="fas fa-check"></i> Prend des rendez-vous & réservations</li>
-                    <li><i class="fas fa-check"></i> Dirige vers le bon interlocuteur</li>
-                    <li><i class="fas fa-check"></i> Répond aux FAQ automatiquement</li>
-                    <li><i class="fas fa-check"></i> Intégration WhatsApp Business</li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s2.f1">Répond automatiquement 24h/24</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s2.f2">Prend des rendez-vous & réservations</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s2.f3">Dirige vers le bon interlocuteur</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s2.f4">Répond aux FAQ automatiquement</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s2.f5">Intégration WhatsApp Business</span></li>
                 </ul>
-                <div class="service-result">
+                <div class="service-result" data-i18n-html="s2.result">
                     <strong>Résultat :</strong> Plus aucun client perdu, même en dehors des heures d'ouverture.
                 </div>
             </div>
 
             <div class="service-card reveal">
                 <div class="service-icon-wrap orange">📍</div>
-                <h3>Optimisation Google Maps & Visibilité Locale</h3>
+                <h3 data-i18n="s3.title">Optimisation Google Maps & Visibilité Locale</h3>
                 <ul class="service-features">
-                    <li><i class="fas fa-check"></i> Création/optimisation fiche Google</li>
-                    <li><i class="fas fa-check"></i> Augmentation des avis 5 étoiles</li>
-                    <li><i class="fas fa-check"></i> Réponse professionnelle aux avis</li>
-                    <li><i class="fas fa-check"></i> Optimisation recherches locales</li>
-                    <li><i class="fas fa-check"></i> Surveillance e-réputation</li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s3.f1">Création/optimisation fiche Google</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s3.f2">Augmentation des avis 5 étoiles</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s3.f3">Réponse professionnelle aux avis</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s3.f4">Optimisation recherches locales</span></li>
+                    <li><i class="fas fa-check"></i> <span data-i18n="s3.f5">Surveillance e-réputation</span></li>
                 </ul>
-                <div class="service-result">
+                <div class="service-result" data-i18n-html="s3.result">
                     <strong>Résultat :</strong> Plus de visibilité locale et augmentation du trafic vers votre commerce.
                 </div>
             </div>
@@ -1723,30 +1783,30 @@
 <section class="why-us" id="why-us">
     <div class="container">
         <div class="section-head reveal">
-            <div class="section-tag">Pourquoi nous choisir</div>
-            <h2 class="section-title">Pourquoi <span class="hl">98%</span> de Nos Clients Renouvellent</h2>
+            <div class="section-tag" data-i18n="why.tag">Pourquoi nous choisir</div>
+            <h2 class="section-title" data-i18n-html="why.title">Pourquoi <span class="hl">98%</span> de Nos Clients Renouvellent</h2>
         </div>
 
         <div class="benefits-grid">
             <div class="benefit-card reveal">
                 <div class="benefit-icon">💰</div>
-                <h3>Forfait Tout-Inclus</h3>
-                <p>Un prix fixe mensuel pour les 3 services. Zéro surprise, zéro frais cachés.</p>
+                <h3 data-i18n="b1.title">Forfait Tout-Inclus</h3>
+                <p data-i18n="b1.text">Un prix fixe mensuel pour les 3 services. Zéro surprise, zéro frais cachés.</p>
             </div>
             <div class="benefit-card reveal">
                 <div class="benefit-icon">⚡</div>
-                <h3>Mise en Ligne Rapide</h3>
-                <p>Site et chatbot opérationnels en moins de 15 jours. Pas de perte de temps.</p>
+                <h3 data-i18n="b2.title">Mise en Ligne Rapide</h3>
+                <p data-i18n="b2.text">Site et chatbot opérationnels en moins de 15 jours. Pas de perte de temps.</p>
             </div>
             <div class="benefit-card reveal">
                 <div class="benefit-icon">👨‍💼</div>
-                <h3>Chef de Projet Dédié</h3>
-                <p>Un expert qui comprend votre métier et vos objectifs business spécifiques.</p>
+                <h3 data-i18n="b3.title">Chef de Projet Dédié</h3>
+                <p data-i18n="b3.text">Un expert qui comprend votre métier et vos objectifs business spécifiques.</p>
             </div>
             <div class="benefit-card reveal">
                 <div class="benefit-icon">📊</div>
-                <h3>Résultats Mesurables</h3>
-                <p>Tableau de bord en temps réel : visites, contacts, avis, conversions.</p>
+                <h3 data-i18n="b4.title">Résultats Mesurables</h3>
+                <p data-i18n="b4.text">Tableau de bord en temps réel : visites, contacts, avis, conversions.</p>
             </div>
         </div>
     </div>
@@ -1756,30 +1816,30 @@
 <section class="process" id="process">
     <div class="container">
         <div class="section-head reveal">
-            <div class="section-tag">Comment ça marche</div>
-            <h2 class="section-title">En <span class="hl">4 Étapes Simples</span> vers le Succès</h2>
+            <div class="section-tag" data-i18n="process.tag">Comment ça marche</div>
+            <h2 class="section-title" data-i18n-html="process.title">En <span class="hl">4 Étapes Simples</span> vers le Succès</h2>
         </div>
 
         <div class="process-steps">
             <div class="process-step reveal">
                 <div class="step-num">1</div>
-                <h3>Audit Gratuit & Stratégie</h3>
-                <p>Nous analysons votre présence actuelle et définissons ensemble vos objectifs concrets. Pas de vente forcée.</p>
+                <h3 data-i18n="p1.title">Audit Gratuit & Stratégie</h3>
+                <p data-i18n="p1.text">Nous analysons votre présence actuelle et définissons ensemble vos objectifs concrets. Pas de vente forcée.</p>
             </div>
             <div class="process-step reveal">
                 <div class="step-num">2</div>
-                <h3>Création & Développement</h3>
-                <p>Notre équipe crée votre site, configure le chatbot et optimise Google Maps. Vous validez chaque étape.</p>
+                <h3 data-i18n="p2.title">Création & Développement</h3>
+                <p data-i18n="p2.text">Notre équipe crée votre site, configure le chatbot et optimise Google Maps. Vous validez chaque étape.</p>
             </div>
             <div class="process-step reveal">
                 <div class="step-num">3</div>
-                <h3>Formation & Lancement</h3>
-                <p>Nous vous formons à l'utilisation de vos nouveaux outils. Lancement et démarrage de génération de leads.</p>
+                <h3 data-i18n="p3.title">Formation & Lancement</h3>
+                <p data-i18n="p3.text">Nous vous formons à l'utilisation de vos nouveaux outils. Lancement et démarrage de génération de leads.</p>
             </div>
             <div class="process-step reveal">
                 <div class="step-num">4</div>
-                <h3>Suivi & Optimisation</h3>
-                <p>Analyse des performances et optimisation continue. Réunions mensuelles de reporting pour maximiser les résultats.</p>
+                <h3 data-i18n="p4.title">Suivi & Optimisation</h3>
+                <p data-i18n="p4.text">Analyse des performances et optimisation continue. Réunions mensuelles de reporting pour maximiser les résultats.</p>
             </div>
         </div>
     </div>
@@ -1789,15 +1849,15 @@
 <section class="final-cta">
     <div class="container">
         <div class="cta-box reveal">
-            <div class="section-tag" style="margin-bottom:20px;">Offre limitée ce mois</div>
-            <h2 class="section-title">Prêt à Transformer Votre Business ?</h2>
-            <p>Rejoignez les <strong style="color:#fff;">150+ entreprises</strong> qui ont déjà augmenté leur visibilité et leurs revenus. Premier audit offert, sans engagement.</p>
+            <div class="section-tag" style="margin-bottom:20px;" data-i18n="cta.tag">Offre limitée ce mois</div>
+            <h2 class="section-title" data-i18n="cta.title">Prêt à Transformer Votre Business ?</h2>
+            <p data-i18n-html="cta.text">Rejoignez les <strong style="color:#fff;">150+ entreprises</strong> qui ont déjà augmenté leur visibilité et leurs revenus. Premier audit offert, sans engagement.</p>
             <div class="cta-buttons">
                 <a href="https://www.instagram.com/novabnisit.agency/" class="btn-instagram" target="_blank">
-                    <i class="fab fa-instagram"></i> Audit Gratuit sur Instagram
+                    <i class="fab fa-instagram"></i> <span data-i18n="cta.btn1">Audit Gratuit sur Instagram</span>
                 </a>
                 <a href="#contact" class="btn-primary">
-                    <i class="fas fa-envelope"></i> Nous contacter
+                    <i class="fas fa-envelope"></i> <span data-i18n="cta.btn2">Nous contacter</span>
                 </a>
             </div>
         </div>
@@ -1808,32 +1868,32 @@
 <section class="contact" id="contact">
     <div class="container">
         <div class="section-head reveal">
-            <div class="section-tag">Parlons de votre projet</div>
-            <h2 class="section-title">Contactez <span class="hl">NovaBnisit</span></h2>
-            <p class="section-sub">Obtenez un audit gratuit de votre présence digitale actuelle. Réponse sous 24h garantie.</p>
+            <div class="section-tag" data-i18n="contact.tag">Parlons de votre projet</div>
+            <h2 class="section-title" data-i18n-html="contact.title">Contactez <span class="hl">NovaBnisit</span></h2>
+            <p class="section-sub" data-i18n="contact.sub">Obtenez un audit gratuit de votre présence digitale actuelle. Réponse sous 24h garantie.</p>
         </div>
 
         <div class="contact-grid">
             <div class="contact-info-box reveal">
-                <h3>Nos coordonnées</h3>
+                <h3 data-i18n="contact.info.title">Nos coordonnées</h3>
                 <div class="contact-item">
                     <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                     <div>
-                        <h4>Adresse</h4>
-                        <p>Maroc — Disponible partout</p>
+                        <h4 data-i18n="contact.addr.title">Adresse</h4>
+                        <p data-i18n="contact.addr.val">Maroc — Disponible partout</p>
                     </div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                     <div>
-                        <h4>Email</h4>
+                        <h4 data-i18n="contact.email.title">Email</h4>
                         <p>novabnisit@email.com</p>
                     </div>
                 </div>
                 <div class="contact-item">
                     <div class="contact-icon"><i class="fab fa-instagram"></i></div>
                     <div>
-                        <h4>Instagram</h4>
+                        <h4 data-i18n="contact.ig.title">Instagram</h4>
                         <p>@novabnisit.agency</p>
                     </div>
                 </div>
@@ -1845,45 +1905,45 @@
             </div>
 
             <div class="contact-form-box reveal">
-                <h3>Envoyez-nous un message</h3>
+                <h3 data-i18n="contact.form.title">Envoyez-nous un message</h3>
                 <form id="contactForm">
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Nom complet *</label>
-                            <input type="text" id="name" class="form-control" placeholder="Votre nom" required>
+                            <label data-i18n="contact.name">Nom complet *</label>
+                            <input type="text" id="name" class="form-control" data-i18n-placeholder="ph.name" placeholder="Votre nom" required>
                         </div>
                         <div class="form-group">
-                            <label>Email *</label>
-                            <input type="email" id="email" class="form-control" placeholder="votre@email.com" required>
+                            <label data-i18n="contact.email.label">Email *</label>
+                            <input type="email" id="email" class="form-control" data-i18n-placeholder="ph.email" placeholder="votre@email.com" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Téléphone</label>
-                            <input type="tel" id="phone" class="form-control" placeholder="+212 6XX XXX XXX">
+                            <label data-i18n="contact.phone">Téléphone</label>
+                            <input type="tel" id="phone" class="form-control" data-i18n-placeholder="ph.phone" placeholder="+212 6XX XXX XXX">
                         </div>
                         <div class="form-group">
-                            <label>Entreprise</label>
-                            <input type="text" id="company" class="form-control" placeholder="Votre entreprise">
+                            <label data-i18n="contact.company">Entreprise</label>
+                            <input type="text" id="company" class="form-control" data-i18n-placeholder="ph.company" placeholder="Votre entreprise">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Service intéressé</label>
+                        <label data-i18n="contact.service">Service intéressé</label>
                         <select id="service" class="form-control">
-                            <option value="">Sélectionnez un service</option>
-                            <option value="site-web">Site Web Professionnel</option>
-                            <option value="chatbot">Chatbot Intelligent</option>
-                            <option value="google-maps">Optimisation Google Maps</option>
-                            <option value="pack-complet">Pack Complet 3-en-1</option>
-                            <option value="autre">Autre</option>
+                            <option value="" data-i18n="contact.service.default">Sélectionnez un service</option>
+                            <option value="site-web" data-i18n="contact.service.1">Site Web Professionnel</option>
+                            <option value="chatbot" data-i18n="contact.service.2">Chatbot Intelligent</option>
+                            <option value="google-maps" data-i18n="contact.service.3">Optimisation Google Maps</option>
+                            <option value="pack-complet" data-i18n="contact.service.4">Pack Complet 3-en-1</option>
+                            <option value="autre" data-i18n="contact.service.5">Autre</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Message *</label>
-                        <textarea id="message" class="form-control" placeholder="Décrivez votre projet ou vos besoins..." required></textarea>
+                        <label data-i18n="contact.message">Message *</label>
+                        <textarea id="message" class="form-control" data-i18n-placeholder="ph.message" placeholder="Décrivez votre projet ou vos besoins..." required></textarea>
                     </div>
                     <button type="submit" class="btn-submit" id="mainSubmitBtn">
-                        <i class="fas fa-paper-plane"></i> Envoyer le message
+                        <i class="fas fa-paper-plane"></i> <span data-i18n="contact.submit">Envoyer le message</span>
                     </button>
                 </form>
             </div>
@@ -1978,44 +2038,44 @@
     <div class="chat-head">
         <div class="chat-avatar">🤖</div>
         <div class="chat-head-info">
-            <h4>NovaBnisit Support</h4>
-            <p><span class="online-dot"></span>En ligne · Réponse sous 24h</p>
+            <h4 data-i18n="chat.title">NovaBnisit Support</h4>
+            <p><span class="online-dot"></span><span data-i18n="chat.status">En ligne · Réponse sous 24h</span></p>
         </div>
         <button class="chat-close" onclick="toggleChat()"><i class="fas fa-times"></i></button>
     </div>
 
     <div class="chat-body">
-        <div class="chat-bubble-msg">
+        <div class="chat-bubble-msg" id="chatGreeting" data-i18n-html="chat.greeting">
             👋 Bonjour ! Je suis l'assistant <strong>NovaBnisit</strong>.<br><br>
             Laissez-nous votre demande et nous vous recontacterons rapidement. <strong>Audit gratuit</strong> offert !
         </div>
 
         <form class="chat-form" id="chatForm">
             <div class="form-group">
-                <label>Votre nom *</label>
-                <input type="text" class="form-control" id="chatName" placeholder="ex: Ahmed Benali" required>
+                <label data-i18n="chat.name">Votre nom *</label>
+                <input type="text" class="form-control" id="chatName" data-i18n-placeholder="ph.chat.name" placeholder="ex: Ahmed Benali" required>
             </div>
             <div class="form-group">
-                <label>Email *</label>
-                <input type="email" class="form-control" id="chatEmail" placeholder="votre@email.com" required>
+                <label data-i18n="chat.email">Email *</label>
+                <input type="email" class="form-control" id="chatEmail" data-i18n-placeholder="ph.email" placeholder="votre@email.com" required>
             </div>
             <div class="form-group">
-                <label>Téléphone</label>
-                <input type="tel" class="form-control" id="chatPhone" placeholder="+212 6XX XXX XXX">
+                <label data-i18n="chat.phone">Téléphone</label>
+                <input type="tel" class="form-control" id="chatPhone" data-i18n-placeholder="ph.phone" placeholder="+212 6XX XXX XXX">
             </div>
             <div class="form-group">
-                <label>Votre besoin *</label>
-                <textarea class="form-control" id="chatMessage" placeholder="Ex: je veux un site web pour mon restaurant..." required></textarea>
+                <label data-i18n="chat.message">Votre besoin *</label>
+                <textarea class="form-control" id="chatMessage" data-i18n-placeholder="ph.chat.message" placeholder="Ex: je veux un site web pour mon restaurant..." required></textarea>
             </div>
             <button type="submit" class="chat-send-btn" id="chatSubmitBtn">
-                <i class="fas fa-paper-plane"></i> Envoyer ma demande
+                <i class="fas fa-paper-plane"></i> <span data-i18n="chat.submit">Envoyer ma demande</span>
             </button>
         </form>
 
         <div class="chat-success-screen" id="chatSuccess">
             <div class="icon">✅</div>
-            <h4>Message bien reçu !</h4>
-            <p>Merci ! Nous vous contacterons sous 24h pour votre audit gratuit personnalisé.</p>
+            <h4 data-i18n="chat.success.title">Message bien reçu !</h4>
+            <p data-i18n="chat.success.text">Merci ! Nous vous contacterons sous 24h pour votre audit gratuit personnalisé.</p>
         </div>
     </div>
 </div>
@@ -2026,28 +2086,28 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="#" class="logo">Nova<span style="background:linear-gradient(135deg,var(--primary-light),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;">Bnisit</span></a>
-                <p>Votre partenaire digital all-in-one pour les PME et commerces locaux. Nous transformons votre visibilité digitale en clients réels.</p>
+                <p data-i18n="footer.about">Votre partenaire digital all-in-one pour les PME et commerces locaux. Nous transformons votre visibilité digitale en clients réels.</p>
             </div>
             <div class="footer-col">
-                <h4>Services</h4>
+                <h4 data-i18n="footer.services">Services</h4>
                 <ul>
-                    <li><a href="#services">Site Web Pro</a></li>
-                    <li><a href="#services">Chatbot Intelligent</a></li>
-                    <li><a href="#services">Google Maps</a></li>
-                    <li><a href="#services">Pack 3-en-1</a></li>
+                    <li><a href="#services" data-i18n="footer.s1">Site Web Pro</a></li>
+                    <li><a href="#services" data-i18n="footer.s2">Chatbot Intelligent</a></li>
+                    <li><a href="#services" data-i18n="footer.s3">Google Maps</a></li>
+                    <li><a href="#services" data-i18n="footer.s4">Pack 3-en-1</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Liens rapides</h4>
+                <h4 data-i18n="footer.links">Liens rapides</h4>
                 <ul>
-                    <li><a href="#about">À propos</a></li>
-                    <li><a href="#process">Processus</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="https://www.instagram.com/novabnisit.agency/" target="_blank">Instagram</a></li>
+                    <li><a href="#about" data-i18n="footer.l1">À propos</a></li>
+                    <li><a href="#process" data-i18n="footer.l2">Processus</a></li>
+                    <li><a href="#contact" data-i18n="footer.l3">Contact</a></li>
+                    <li><a href="https://www.instagram.com/novabnisit.agency/" target="_blank" data-i18n="footer.l4">Instagram</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Contact</h4>
+                <h4 data-i18n="footer.contact">Contact</h4>
                 <ul>
                     <li><a href="mailto:novabnisit@email.com">novabnisit@email.com</a></li>
                     <li><a href="#">Maroc</a></li>
@@ -2057,11 +2117,11 @@
         </div>
 
         <div class="footer-bottom">
-            <p>© 2025 NovaBnisit. Tous droits réservés.</p>
+            <p data-i18n="footer.copy">© 2025 NovaBnisit. Tous droits réservés.</p>
             <p>
-                <a href="#">Mentions légales</a> &nbsp;·&nbsp;
-                <a href="#">Confidentialité</a> &nbsp;·&nbsp;
-                <a href="#">CGV</a>
+                <a href="#" data-i18n="footer.legal">Mentions légales</a> &nbsp;·&nbsp;
+                <a href="#" data-i18n="footer.privacy">Confidentialité</a> &nbsp;·&nbsp;
+                <a href="#" data-i18n="footer.cgv">CGV</a>
             </p>
         </div>
     </div>
@@ -2070,8 +2130,311 @@
 <!-- ─── JAVASCRIPT ─────────────────────────────────────────────────────────── -->
 <script>
 // ── Config API ────────────────────────────────────────────────────────────────
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 let adminToken = sessionStorage.getItem('adminToken') || null;
+
+// ── Traductions (FR / EN / AR) ────────────────────────────────────────────────
+const TRANSLATIONS = {
+  fr: {
+    'nav.about':'À propos','nav.services':'Services','nav.process':'Processus','nav.contact':'Contact',
+    'nav.admin':'Admin','nav.audit':'Audit Gratuit',
+    'hero.badge':'Agence Digitale All-in-One · Maroc',
+    'hero.line1':'Transformez Votre Business','hero.line2':'en Machine à Clients',
+    'hero.sub':'Site web professionnel + chatbot intelligent + Google Maps optimisé. La solution complète pour les PME et commerces qui veulent dominer le digital.',
+    'hero.btn1':'Audit Gratuit — Maintenant','hero.btn2':'Nos Services',
+    'hero.stat1.num':'+150','hero.stat1.label':'Clients satisfaits',
+    'hero.stat2.num':'98%','hero.stat2.label':'Taux de renouvellement',
+    'hero.stat3.num':'15j','hero.stat3.label':'Mise en ligne garantie',
+    'hero.stat4.num':'24h','hero.stat4.label':'Support réactif',
+    'about.tag':'À propos de NovaBnisit',
+    'about.title':'Votre Partenaire Digital <span class="hl">All-in-One</span>',
+    'about.p1':'Nous ne sommes pas une agence digitale comme les autres. NovaBnisit se spécialise exclusivement dans les solutions digitales pour <strong style="color:#fff;">petites et moyennes entreprises</strong>, artisans et commerçants.',
+    'about.p2':'Notre mission : vous apporter des <strong style="color:#fff;">résultats concrets et mesurables</strong> sans jargon technique. Trois services essentiels, une solution complète et abordable.',
+    'about.f1':'Équipe dédiée','about.f2':'Prix transparent','about.f3':'Résultats mesurables',
+    'about.f4':'Support 24h/24','about.f5':'Mise en ligne rapide','about.f6':'Sans engagement longue durée',
+    'about.card.title':'Votre Business, Amplifié',
+    'about.card.text':'Nous combinons technologie et stratégie pour transformer votre présence digitale en moteur de croissance réel.',
+    'about.clients':'Clients accompagnés','about.satisfaction':'Satisfaction client',
+    'problems.tag':'Problèmes fréquents',
+    'problems.title':'Ces Problèmes Vous <span class="hl">Parlent ?</span>',
+    'problems.sub':'Des milliers de commerces perdent des clients chaque jour pour ces raisons. Nous les résolvons.',
+    'problem1.title':'Clients qui vous cherchent… sans vous trouver',
+    'problem1.text':"Vos clients potentiels consultent Google mais votre commerce n'apparaît pas. Résultat : ils choisissent votre concurrent mieux référencé.",
+    'problem2.title':'Appels manqués = ventes définitivement perdues',
+    'problem2.text':"Vos prospects appellent en dehors des horaires. Pas de réponse = client perdu. Sans chatbot, vous travaillez seulement 8h/24.",
+    'problem3.title':'Site web obsolète qui ne convertit pas',
+    'problem3.text':"Votre site existe mais ne génère aucun contact. Il n'est pas responsive, lent, et ne reflète pas la qualité de votre entreprise.",
+    'problems.cta':"<strong>Ces problèmes ont une solution précise.</strong> Découvrez comment nous les résolvons pour des centaines d'entreprises comme la vôtre.",
+    'problems.btn':'Voir nos solutions',
+    'services.tag':'Ce que nous faisons',
+    'services.title':'Notre Pack Digital <span class="hl">3-en-1</span>',
+    'services.sub':'Trois services complémentaires qui fonctionnent ensemble pour maximiser votre visibilité et vos conversions.',
+    's1.title':'Site Web Professionnel','s1.f1':'Site responsive (mobile, tablette, PC)','s1.f2':'Design moderne et sur-mesure',
+    's1.f3':'Optimisé référencement local (SEO)',"s1.f4":"Boutons d'appel direct intégrés",'s1.f5':'Formation & mise en ligne incluses',
+    's1.result':'<strong>Résultat :</strong> Votre vitrine digitale 24h/24 qui convertit les visiteurs en clients.',
+    's2.badge':'⭐ Populaire','s2.title':'Chatbot Intelligent & Site',
+    's2.f1':'Répond automatiquement 24h/24','s2.f2':'Prend des rendez-vous & réservations',
+    's2.f3':'Dirige vers le bon interlocuteur','s2.f4':'Répond aux FAQ automatiquement','s2.f5':'Intégration WhatsApp Business',
+    's2.result':"<strong>Résultat :</strong> Plus aucun client perdu, même en dehors des heures d'ouverture.",
+    's3.title':'Optimisation Google Maps & Visibilité Locale',
+    's3.f1':'Création/optimisation fiche Google','s3.f2':'Augmentation des avis 5 étoiles',
+    's3.f3':'Réponse professionnelle aux avis','s3.f4':'Optimisation recherches locales','s3.f5':'Surveillance e-réputation',
+    's3.result':'<strong>Résultat :</strong> Plus de visibilité locale et augmentation du trafic vers votre commerce.',
+    'why.tag':'Pourquoi nous choisir','why.title':'Pourquoi <span class="hl">98%</span> de Nos Clients Renouvellent',
+    'b1.title':'Forfait Tout-Inclus','b1.text':'Un prix fixe mensuel pour les 3 services. Zéro surprise, zéro frais cachés.',
+    'b2.title':'Mise en Ligne Rapide','b2.text':'Site et chatbot opérationnels en moins de 15 jours. Pas de perte de temps.',
+    'b3.title':'Chef de Projet Dédié','b3.text':"Un expert qui comprend votre métier et vos objectifs business spécifiques.",
+    'b4.title':'Résultats Mesurables','b4.text':'Tableau de bord en temps réel : visites, contacts, avis, conversions.',
+    'process.tag':'Comment ça marche','process.title':'En <span class="hl">4 Étapes Simples</span> vers le Succès',
+    'p1.title':'Audit Gratuit & Stratégie','p1.text':"Nous analysons votre présence actuelle et définissons ensemble vos objectifs concrets. Pas de vente forcée.",
+    'p2.title':'Création & Développement','p2.text':"Notre équipe crée votre site, configure le chatbot et optimise Google Maps. Vous validez chaque étape.",
+    'p3.title':'Formation & Lancement','p3.text':"Nous vous formons à l'utilisation de vos nouveaux outils. Lancement et démarrage de génération de leads.",
+    'p4.title':'Suivi & Optimisation','p4.text':"Analyse des performances et optimisation continue. Réunions mensuelles de reporting pour maximiser les résultats.",
+    'cta.tag':'Offre limitée ce mois','cta.title':'Prêt à Transformer Votre Business ?',
+    'cta.text':'Rejoignez les <strong style="color:#fff;">150+ entreprises</strong> qui ont déjà augmenté leur visibilité et leurs revenus. Premier audit offert, sans engagement.',
+    'cta.btn1':'Audit Gratuit sur Instagram','cta.btn2':'Nous contacter',
+    'contact.tag':'Parlons de votre projet','contact.title':'Contactez <span class="hl">NovaBnisit</span>',
+    'contact.sub':"Obtenez un audit gratuit de votre présence digitale actuelle. Réponse sous 24h garantie.",
+    'contact.info.title':'Nos coordonnées','contact.addr.title':'Adresse','contact.addr.val':'Maroc — Disponible partout',
+    'contact.email.title':'Email','contact.ig.title':'Instagram','contact.form.title':'Envoyez-nous un message',
+    'contact.name':'Nom complet *','contact.email.label':'Email *','contact.phone':'Téléphone',
+    'contact.company':'Entreprise','contact.service':'Service intéressé',
+    'contact.service.default':'Sélectionnez un service','contact.service.1':'Site Web Professionnel',
+    'contact.service.2':'Chatbot Intelligent','contact.service.3':'Optimisation Google Maps',
+    'contact.service.4':'Pack Complet 3-en-1','contact.service.5':'Autre',
+    'contact.message':'Message *','contact.submit':'Envoyer le message',
+    'ph.name':'Votre nom','ph.email':'votre@email.com','ph.phone':'+212 6XX XXX XXX',
+    'ph.company':'Votre entreprise','ph.message':'Décrivez votre projet ou vos besoins...',
+    'ph.chat.name':'ex: Ahmed Benali','ph.chat.message':'Ex: je veux un site web pour mon restaurant...',
+    'chat.title':'NovaBnisit Support','chat.status':'En ligne · Réponse sous 24h',
+    'chat.greeting':"👋 Bonjour ! Je suis l'assistant <strong>NovaBnisit</strong>.<br><br>Laissez-nous votre demande et nous vous recontacterons rapidement. <strong>Audit gratuit</strong> offert !",
+    'chat.name':'Votre nom *','chat.email':'Email *','chat.phone':'Téléphone',
+    'chat.message':'Votre besoin *','chat.submit':'Envoyer ma demande',
+    'chat.success.title':'Message bien reçu !','chat.success.text':'Merci ! Nous vous contacterons sous 24h pour votre audit gratuit personnalisé.',
+    'footer.about':"Votre partenaire digital all-in-one pour les PME et commerces locaux. Nous transformons votre visibilité digitale en clients réels.",
+    'footer.services':'Services','footer.links':'Liens rapides','footer.contact':'Contact',
+    'footer.s1':'Site Web Pro','footer.s2':'Chatbot Intelligent','footer.s3':'Google Maps','footer.s4':'Pack 3-en-1',
+    'footer.l1':'À propos','footer.l2':'Processus','footer.l3':'Contact','footer.l4':'Instagram',
+    'footer.copy':'© 2025 NovaBnisit. Tous droits réservés.',
+    'footer.legal':'Mentions légales','footer.privacy':'Confidentialité','footer.cgv':'CGV',
+    'login.title':'🔐 Connexion Admin','login.sub':"Accédez à votre espace de gestion",
+    'login.user':"Nom d'utilisateur",'login.pass':'Mot de passe',
+    'login.btn.html':'<i class="fas fa-sign-in-alt"></i> Se connecter'
+  },
+  en: {
+    'nav.about':'About','nav.services':'Services','nav.process':'Process','nav.contact':'Contact',
+    'nav.admin':'Admin','nav.audit':'Free Audit',
+    'hero.badge':'All-in-One Digital Agency · Morocco',
+    'hero.line1':'Transform Your Business','hero.line2':'Into a Client Machine',
+    'hero.sub':'Professional website + intelligent chatbot + optimized Google Maps. The complete solution for SMEs and businesses that want to dominate the digital world.',
+    'hero.btn1':'Free Audit — Now','hero.btn2':'Our Services',
+    'hero.stat1.num':'+150','hero.stat1.label':'Satisfied clients',
+    'hero.stat2.num':'98%','hero.stat2.label':'Renewal rate',
+    'hero.stat3.num':'15d','hero.stat3.label':'Guaranteed launch',
+    'hero.stat4.num':'24h','hero.stat4.label':'Responsive support',
+    'about.tag':'About NovaBnisit',
+    'about.title':'Your All-in-One <span class="hl">Digital Partner</span>',
+    'about.p1':'We are not your typical digital agency. NovaBnisit specializes exclusively in digital solutions for <strong style="color:#fff;">small and medium-sized businesses</strong>, artisans, and merchants.',
+    'about.p2':'Our mission: deliver <strong style="color:#fff;">concrete, measurable results</strong> without technical jargon. Three essential services, one complete and affordable solution.',
+    'about.f1':'Dedicated team','about.f2':'Transparent pricing','about.f3':'Measurable results',
+    'about.f4':'24/7 support','about.f5':'Fast launch','about.f6':'No long-term commitment',
+    'about.card.title':'Your Business, Amplified',
+    'about.card.text':'We combine technology and strategy to transform your digital presence into a real growth engine.',
+    'about.clients':'Clients supported','about.satisfaction':'Client satisfaction',
+    'problems.tag':'Common problems',
+    'problems.title':'Do These Problems <span class="hl">Sound Familiar?</span>',
+    'problems.sub':'Thousands of businesses lose clients every day for these reasons. We solve them.',
+    'problem1.title':'Clients looking for you… but not finding you',
+    'problem1.text':"Potential clients search Google but your business doesn't appear. Result: they choose a better-ranked competitor.",
+    'problem2.title':'Missed calls = permanently lost sales',
+    'problem2.text':'Prospects call outside business hours. No answer = lost client. Without a chatbot, you only work 8h/24.',
+    'problem3.title':"Outdated website that doesn't convert",
+    'problem3.text':"Your site exists but generates no contacts. It's not responsive, slow, and doesn't reflect your company's quality.",
+    'problems.cta':'<strong>These problems have a precise solution.</strong> Discover how we solve them for hundreds of businesses like yours.',
+    'problems.btn':'See our solutions',
+    'services.tag':'What we do',
+    'services.title':'Our Digital Pack <span class="hl">3-in-1</span>',
+    'services.sub':'Three complementary services that work together to maximize your visibility and conversions.',
+    's1.title':'Professional Website','s1.f1':'Responsive site (mobile, tablet, PC)','s1.f2':'Modern custom design',
+    's1.f3':'Local SEO optimized','s1.f4':'Integrated direct call buttons','s1.f5':'Training & launch included',
+    's1.result':'<strong>Result:</strong> Your 24/7 digital storefront that converts visitors into clients.',
+    's2.badge':'⭐ Popular','s2.title':'Intelligent Chatbot & Website',
+    's2.f1':'Responds automatically 24/7','s2.f2':'Takes appointments & reservations',
+    's2.f3':'Routes to the right person','s2.f4':'Answers FAQs automatically','s2.f5':'WhatsApp Business integration',
+    's2.result':'<strong>Result:</strong> No client lost, even outside business hours.',
+    's3.title':'Google Maps Optimization & Local Visibility',
+    's3.f1':'Google listing creation/optimization','s3.f2':'Increase 5-star reviews',
+    's3.f3':'Professional review responses','s3.f4':'Local search optimization','s3.f5':'E-reputation monitoring',
+    's3.result':'<strong>Result:</strong> More local visibility and increased traffic to your business.',
+    'why.tag':'Why choose us','why.title':'Why <span class="hl">98%</span> of Our Clients Renew',
+    'b1.title':'All-Inclusive Package','b1.text':'A fixed monthly price for all 3 services. Zero surprises, zero hidden fees.',
+    'b2.title':'Fast Launch','b2.text':'Website and chatbot operational in less than 15 days. No time wasted.',
+    'b3.title':'Dedicated Project Manager','b3.text':'An expert who understands your business and specific objectives.',
+    'b4.title':'Measurable Results','b4.text':'Real-time dashboard: visits, contacts, reviews, conversions.',
+    'process.tag':'How it works','process.title':'In <span class="hl">4 Simple Steps</span> to Success',
+    'p1.title':'Free Audit & Strategy','p1.text':'We analyze your current presence and define your concrete objectives together. No forced selling.',
+    'p2.title':'Creation & Development','p2.text':'Our team creates your site, configures the chatbot and optimizes Google Maps. You validate each step.',
+    'p3.title':'Training & Launch','p3.text':'We train you on using your new tools. Launch and start of lead generation.',
+    'p4.title':'Monitoring & Optimization','p4.text':'Performance analysis and continuous optimization. Monthly reporting meetings to maximize results.',
+    'cta.tag':'Limited offer this month','cta.title':'Ready to Transform Your Business?',
+    'cta.text':'Join <strong style="color:#fff;">150+ businesses</strong> that have already increased their visibility and revenue. First audit free, no commitment.',
+    'cta.btn1':'Free Audit on Instagram','cta.btn2':'Contact us',
+    'contact.tag':"Let's talk about your project",'contact.title':'Contact <span class="hl">NovaBnisit</span>',
+    'contact.sub':'Get a free audit of your current digital presence. Reply within 24h guaranteed.',
+    'contact.info.title':'Our contact details','contact.addr.title':'Address','contact.addr.val':'Morocco — Available everywhere',
+    'contact.email.title':'Email','contact.ig.title':'Instagram','contact.form.title':'Send us a message',
+    'contact.name':'Full name *','contact.email.label':'Email *','contact.phone':'Phone',
+    'contact.company':'Company','contact.service':'Service interested in',
+    'contact.service.default':'Select a service','contact.service.1':'Professional Website',
+    'contact.service.2':'Intelligent Chatbot','contact.service.3':'Google Maps Optimization',
+    'contact.service.4':'Complete Pack 3-in-1','contact.service.5':'Other',
+    'contact.message':'Message *','contact.submit':'Send message',
+    'ph.name':'Your name','ph.email':'your@email.com','ph.phone':'+212 6XX XXX XXX',
+    'ph.company':'Your company','ph.message':'Describe your project or needs...',
+    'ph.chat.name':'ex: Ahmed Benali','ph.chat.message':'Ex: I want a website for my restaurant...',
+    'chat.title':'NovaBnisit Support','chat.status':'Online · Reply within 24h',
+    'chat.greeting':"👋 Hello! I'm the <strong>NovaBnisit</strong> assistant.<br><br>Leave us your request and we'll get back to you quickly. <strong>Free audit</strong> included!",
+    'chat.name':'Your name *','chat.email':'Email *','chat.phone':'Phone',
+    'chat.message':'Your need *','chat.submit':'Send my request',
+    'chat.success.title':'Message received!','chat.success.text':'Thank you! We will contact you within 24h for your personalized free audit.',
+    'footer.about':'Your all-in-one digital partner for SMEs and local businesses. We transform your digital visibility into real clients.',
+    'footer.services':'Services','footer.links':'Quick links','footer.contact':'Contact',
+    'footer.s1':'Pro Website','footer.s2':'Intelligent Chatbot','footer.s3':'Google Maps','footer.s4':'Pack 3-in-1',
+    'footer.l1':'About','footer.l2':'Process','footer.l3':'Contact','footer.l4':'Instagram',
+    'footer.copy':'© 2025 NovaBnisit. All rights reserved.',
+    'footer.legal':'Legal notice','footer.privacy':'Privacy','footer.cgv':'T&C',
+    'login.title':'🔐 Admin Login','login.sub':'Access your management space',
+    'login.user':'Username','login.pass':'Password',
+    'login.btn.html':'<i class="fas fa-sign-in-alt"></i> Log in'
+  },
+  ar: {
+    'nav.about':'حول','nav.services':'الخدمات','nav.process':'العملية','nav.contact':'تواصل',
+    'nav.admin':'مسؤول','nav.audit':'تدقيق مجاني',
+    'hero.badge':'وكالة رقمية متكاملة · المغرب',
+    'hero.line1':'حوّل عملك التجاري','hero.line2':'إلى آلة جذب العملاء',
+    'hero.sub':'موقع احترافي + دردشة ذكية + Google Maps محسّن. الحل الكامل للمقاولات الصغيرة والمتوسطة التي تريد السيطرة على الفضاء الرقمي.',
+    'hero.btn1':'تدقيق مجاني — الآن','hero.btn2':'خدماتنا',
+    'hero.stat1.num':'+150','hero.stat1.label':'عميل راضٍ',
+    'hero.stat2.num':'98%','hero.stat2.label':'نسبة التجديد',
+    'hero.stat3.num':'15 يوم','hero.stat3.label':'إطلاق مضمون',
+    'hero.stat4.num':'24 ساعة','hero.stat4.label':'دعم سريع',
+    'about.tag':'حول NovaBnisit',
+    'about.title':'شريكك الرقمي <span class="hl">المتكامل</span>',
+    'about.p1':'لسنا وكالة رقمية عادية. NovaBnisit متخصصة حصرياً في الحلول الرقمية لـ<strong style="color:#fff;">المقاولات الصغيرة والمتوسطة</strong>، الحرفيين والتجار.',
+    'about.p2':'مهمتنا: تقديم <strong style="color:#fff;">نتائج ملموسة وقابلة للقياس</strong> دون مصطلحات تقنية معقدة. ثلاث خدمات أساسية، حل متكامل وبأسعار معقولة.',
+    'about.f1':'فريق متخصص','about.f2':'أسعار شفافة','about.f3':'نتائج قابلة للقياس',
+    'about.f4':'دعم على مدار الساعة','about.f5':'إطلاق سريع','about.f6':'بدون التزام طويل الأمد',
+    'about.card.title':'عملك، مُعزَّز',
+    'about.card.text':'نجمع التكنولوجيا والاستراتيجية لتحويل حضورك الرقمي إلى محرك نمو حقيقي.',
+    'about.clients':'عميل مرافَق','about.satisfaction':'رضا العملاء',
+    'problems.tag':'مشاكل شائعة',
+    'problems.title':'هل تعاني من <span class="hl">هذه المشاكل؟</span>',
+    'problems.sub':'آلاف المحلات التجارية تخسر عملاء كل يوم لهذه الأسباب. نحن نحلها.',
+    'problem1.title':'عملاء يبحثون عنك… دون أن يجدوك',
+    'problem1.text':'عملاؤك المحتملون يبحثون على Google لكن عملك لا يظهر. النتيجة: يختارون منافسك الأفضل ترتيباً.',
+    'problem2.title':'مكالمات فائتة = مبيعات ضائعة للأبد',
+    'problem2.text':'عملاؤك يتصلون خارج أوقات العمل. لا رد = عميل مفقود. بدون chatbot، تعمل 8 ساعات من 24.',
+    'problem3.title':'موقع قديم لا يحول الزوار',
+    'problem3.text':'موقعك موجود لكنه لا يولد أي تواصل. غير متجاوب، بطيء، ولا يعكس جودة خدماتك.',
+    'problems.cta':'<strong>لهذه المشاكل حل دقيق.</strong> اكتشف كيف نحلها لمئات من المقاولات مثل مقاولتك.',
+    'problems.btn':'اكتشف حلولنا',
+    'services.tag':'ما نقوم به',
+    'services.title':'باقتنا الرقمية <span class="hl">3 في 1</span>',
+    'services.sub':'ثلاث خدمات متكاملة تعمل معاً لتعظيم ظهورك وتحويل الزوار إلى عملاء.',
+    's1.title':'موقع ويب احترافي','s1.f1':'موقع متجاوب (جوال، تابلت، PC)','s1.f2':'تصميم عصري وفريد',
+    's1.f3':'مُحسَّن لمحركات البحث المحلية (SEO)','s1.f4':'أزرار اتصال مباشر مدمجة','s1.f5':'تدريب وإطلاق مشمولان',
+    's1.result':'<strong>النتيجة:</strong> واجهتك الرقمية على مدار الساعة تحول الزوار إلى عملاء.',
+    's2.badge':'⭐ الأكثر طلباً','s2.title':'Chatbot ذكي وموقع ويب',
+    's2.f1':'يرد تلقائياً على مدار الساعة','s2.f2':'يحجز المواعيد والحجوزات',
+    's2.f3':'يوجه نحو الشخص المناسب','s2.f4':'يجيب على الأسئلة الشائعة تلقائياً','s2.f5':'تكامل مع WhatsApp Business',
+    's2.result':'<strong>النتيجة:</strong> لا عميل مفقود، حتى خارج ساعات العمل.',
+    's3.title':'تحسين Google Maps والظهور المحلي',
+    's3.f1':'إنشاء/تحسين بطاقة Google','s3.f2':'زيادة تقييمات 5 نجوم',
+    's3.f3':'الرد الاحترافي على التقييمات','s3.f4':'تحسين البحث المحلي','s3.f5':'مراقبة السمعة الإلكترونية',
+    's3.result':'<strong>النتيجة:</strong> ظهور محلي أكثر وزيادة حركة الزوار نحو محلك.',
+    'why.tag':'لماذا تختارنا','why.title':'لماذا <span class="hl">98%</span> من عملائنا يجددون',
+    'b1.title':'باقة شاملة للكل','b1.text':'سعر شهري ثابت للخدمات الثلاث. صفر مفاجآت، صفر رسوم مخفية.',
+    'b2.title':'إطلاق سريع','b2.text':'الموقع والـchatbot جاهزان في أقل من 15 يوماً. بدون تضييع وقت.',
+    'b3.title':'مدير مشروع مخصص','b3.text':'خبير يفهم مجالك وأهدافك التجارية المحددة.',
+    'b4.title':'نتائج قابلة للقياس','b4.text':'لوحة تحكم في الوقت الحقيقي: زيارات، تواصل، تقييمات، تحويلات.',
+    'process.tag':'كيف يعمل','process.title':'في <span class="hl">4 خطوات بسيطة</span> نحو النجاح',
+    'p1.title':'تدقيق مجاني واستراتيجية','p1.text':'نحلل حضورك الحالي ونحدد معك أهدافك الملموسة. لا بيع قسري.',
+    'p2.title':'الإنشاء والتطوير','p2.text':'فريقنا ينشئ موقعك، يضبط الـchatbot ويحسّن Google Maps. أنت تصادق على كل خطوة.',
+    'p3.title':'التدريب والإطلاق','p3.text':'نُدرّبك على استخدام أدواتك الجديدة. إطلاق وبدء توليد العملاء المحتملين.',
+    'p4.title':'المتابعة والتحسين','p4.text':'تحليل الأداء وتحسين مستمر. اجتماعات تقارير شهرية لتعظيم النتائج.',
+    'cta.tag':'عرض محدود هذا الشهر','cta.title':'مستعد لتحويل عملك؟',
+    'cta.text':'انضم إلى <strong style="color:#fff;">أكثر من 150 مقاولة</strong> زادت بالفعل من ظهورها وإيراداتها. أول تدقيق مجاني، بدون التزام.',
+    'cta.btn1':'تدقيق مجاني على Instagram','cta.btn2':'تواصل معنا',
+    'contact.tag':'لنتحدث عن مشروعك','contact.title':'تواصل مع <span class="hl">NovaBnisit</span>',
+    'contact.sub':'احصل على تدقيق مجاني لحضورك الرقمي الحالي. رد خلال 24 ساعة مضمون.',
+    'contact.info.title':'معلومات التواصل','contact.addr.title':'العنوان','contact.addr.val':'المغرب — متاح في كل مكان',
+    'contact.email.title':'البريد الإلكتروني','contact.ig.title':'Instagram','contact.form.title':'أرسل لنا رسالة',
+    'contact.name':'الاسم الكامل *','contact.email.label':'البريد الإلكتروني *','contact.phone':'الهاتف',
+    'contact.company':'الشركة','contact.service':'الخدمة المهتم بها',
+    'contact.service.default':'اختر خدمة','contact.service.1':'موقع ويب احترافي',
+    'contact.service.2':'Chatbot ذكي','contact.service.3':'تحسين Google Maps',
+    'contact.service.4':'الباقة الكاملة 3 في 1','contact.service.5':'أخرى',
+    'contact.message':'الرسالة *','contact.submit':'إرسال الرسالة',
+    'ph.name':'اسمك','ph.email':'بريدك@example.com','ph.phone':'+212 6XX XXX XXX',
+    'ph.company':'شركتك','ph.message':'صف مشروعك أو احتياجاتك...',
+    'ph.chat.name':'مثال: أحمد بن علي','ph.chat.message':'مثال: أريد موقعاً لمطعمي...',
+    'chat.title':'دعم NovaBnisit','chat.status':'متصل · رد خلال 24 ساعة',
+    'chat.greeting':'👋 مرحباً! أنا مساعد <strong>NovaBnisit</strong>.<br><br>اتركنا طلبك وسنتواصل معك بسرعة. <strong>تدقيق مجاني</strong> مُدرج!',
+    'chat.name':'اسمك *','chat.email':'البريد الإلكتروني *','chat.phone':'الهاتف',
+    'chat.message':'حاجتك *','chat.submit':'إرسال طلبي',
+    'chat.success.title':'تم استلام رسالتك!','chat.success.text':'شكراً! سنتواصل معك خلال 24 ساعة لتدقيقك المجاني الشخصي.',
+    'footer.about':'شريكك الرقمي المتكامل للمقاولات الصغيرة والمتوسطة والمحلات التجارية. نحول ظهورك الرقمي إلى عملاء حقيقيين.',
+    'footer.services':'الخدمات','footer.links':'روابط سريعة','footer.contact':'التواصل',
+    'footer.s1':'موقع احترافي','footer.s2':'Chatbot ذكي','footer.s3':'Google Maps','footer.s4':'باقة 3 في 1',
+    'footer.l1':'حول','footer.l2':'العملية','footer.l3':'تواصل','footer.l4':'Instagram',
+    'footer.copy':'© 2025 NovaBnisit. جميع الحقوق محفوظة.',
+    'footer.legal':'الشروط القانونية','footer.privacy':'الخصوصية','footer.cgv':'الشروط العامة',
+    'login.title':'🔐 تسجيل دخول المسؤول','login.sub':'ادخل إلى مساحة الإدارة',
+    'login.user':'اسم المستخدم','login.pass':'كلمة المرور',
+    'login.btn.html':'<i class="fas fa-sign-in-alt"></i> تسجيل الدخول'
+  }
+};
+
+let currentLang = localStorage.getItem('nbLang') || 'fr';
+
+function setLanguage(lang) {
+  if (!TRANSLATIONS[lang]) return;
+  currentLang = lang;
+  localStorage.setItem('nbLang', lang);
+
+  // Direction RTL pour l'arabe
+  document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', lang);
+
+  const t = TRANSLATIONS[lang];
+
+  // Texte simple
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+
+  // Texte HTML (avec balises)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+
+  // Placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Boutons lang actif
+  ['fr','en','ar'].forEach(l => {
+    const btn = document.getElementById('lang-' + l);
+    if (btn) btn.classList.toggle('active', l === lang);
+  });
+}
+
+// Init langue au chargement
+setLanguage(currentLang);
 
 function authHeaders() {
     return { 'Authorization': `Bearer ${adminToken}`, 'Content-Type': 'application/json' };

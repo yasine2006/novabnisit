@@ -13,14 +13,100 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 // ─── DATABASE ─────────────────────────────────────────────────────────────────
-// En production (Railway) → utilise PostgreSQL via DATABASE_URL
-// En local → utilise un fichier JSON (lowdb)
+// Priority: FIREBASE → POSTGRESQL → JSON local
+//
+// Variables d'environnement pour Firebase:
+//   FIREBASE_PROJECT_ID   → ID du projet Firebase
+//   FIREBASE_CLIENT_EMAIL → Email du compte de service
+//   FIREBASE_PRIVATE_KEY  → Clé privée (avec \n)
 
 let db;
 
 async function initDB() {
-  if (process.env.DATABASE_URL) {
-    // ── PostgreSQL (Railway production) ──────────────────────────────────────
+
+  if (process.env.FIREBASE_PROJECT_ID) {
+    // ── FIREBASE FIRESTORE ────────────────────────────────────────────────────
+    const admin = require('firebase-admin');
+
+    if (!admin.apps.length) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId:   process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey:  process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        })
+      });
+    }
+
+    const firestore = admin.firestore();
+    const contacts  = firestore.collection('contacts');
+    const admins    = firestore.collection('admins');
+
+    // Admin par défaut
+    const adminSnap = await admins.doc('admin').get();
+    if (!adminSnap.exists) {
+      await admins.doc('admin').set({
+        username: 'admin',
+        password: bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10),
+        email: 'admin@novabnisit.com',
+        createdAt: new Date().toISOString()
+      });
+      console.log('✅ Admin Firestore créé');
+    }
+
+    db = {
+      type: 'firestore',
+
+      async addContact({ name, email, phone, company, service, message }) {
+        const ref = await contacts.add({
+          name, email,
+          phone: phone || null, company: company || null,
+          service: service || null, message,
+          status: 'new',
+          created_at: new Date().toISOString()
+        });
+        const doc = await ref.get();
+        return { id: ref.id, ...doc.data() };
+      },
+
+      async getContacts() {
+        const snap = await contacts.orderBy('created_at', 'desc').get();
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      },
+
+      async updateContact(id, status) {
+        try { await contacts.doc(id).update({ status }); return true; }
+        catch { return false; }
+      },
+
+      async deleteContact(id) {
+        try { await contacts.doc(id).delete(); return true; }
+        catch { return false; }
+      },
+
+      async getStats() {
+        const snap = await contacts.get();
+        const all = snap.docs.map(d => d.data());
+        const now = new Date();
+        const m = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        return {
+          total:     all.length,
+          new:       all.filter(c => c.status === 'new').length,
+          contacted: all.filter(c => c.status === 'contacted').length,
+          thisMonth: all.filter(c => c.created_at && c.created_at.startsWith(m)).length
+        };
+      },
+
+      async getUser(username) {
+        const doc = await admins.doc(username).get();
+        return doc.exists ? { username: doc.id, ...doc.data() } : null;
+      }
+    };
+
+    console.log('✅ Firebase Firestore connecté ☁️');
+
+  } else if (process.env.DATABASE_URL) {
+    // ── POSTGRESQL (Railway) ──────────────────────────────────────────────────
     const { Pool } = require('pg');
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL,
@@ -48,7 +134,6 @@ async function initDB() {
       );
     `);
 
-    // Créer admin par défaut
     const existing = await pool.query("SELECT id FROM admins WHERE username = 'admin'");
     if (existing.rows.length === 0) {
       const hashed = bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10);
@@ -60,8 +145,7 @@ async function initDB() {
     }
 
     db = {
-      type: 'pg',
-      pool,
+      type: 'pg', pool,
       async addContact({ name, email, phone, company, service, message }) {
         const { rows } = await pool.query(
           `INSERT INTO contacts (name, email, phone, company, service, message)
@@ -83,8 +167,8 @@ async function initDB() {
         return rowCount > 0;
       },
       async getStats() {
-        const total = (await pool.query('SELECT COUNT(*) FROM contacts')).rows[0].count;
-        const newC = (await pool.query("SELECT COUNT(*) FROM contacts WHERE status='new'")).rows[0].count;
+        const total     = (await pool.query('SELECT COUNT(*) FROM contacts')).rows[0].count;
+        const newC      = (await pool.query("SELECT COUNT(*) FROM contacts WHERE status='new'")).rows[0].count;
         const contacted = (await pool.query("SELECT COUNT(*) FROM contacts WHERE status='contacted'")).rows[0].count;
         const thisMonth = (await pool.query(
           "SELECT COUNT(*) FROM contacts WHERE DATE_TRUNC('month', created_at) = DATE_TRUNC('month', NOW())"
@@ -97,14 +181,13 @@ async function initDB() {
       }
     };
 
-    console.log('✅ Base de données PostgreSQL connectée');
+    console.log('✅ PostgreSQL connecté');
 
   } else {
-    // ── lowdb (développement local) ───────────────────────────────────────────
+    // ── JSON LOCAL (développement) ────────────────────────────────────────────
     const low = require('lowdb');
     const FileSync = require('lowdb/adapters/FileSync');
-    const adapter = new FileSync(path.join(__dirname, 'database.json'));
-    const ldb = low(adapter);
+    const ldb = low(new FileSync(path.join(__dirname, 'database.json')));
 
     ldb.defaults({ contacts: [], admins: [], nextId: 1 }).write();
 
@@ -146,14 +229,13 @@ async function initDB() {
         return ldb.get('contacts').value().length < before;
       },
       getStats() {
-        const contacts = ldb.get('contacts').value();
-        const now = new Date();
-        const m = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const all = ldb.get('contacts').value();
+        const m = new Date().toISOString().slice(0, 7);
         return {
-          total: contacts.length,
-          new: contacts.filter(c => c.status === 'new').length,
-          contacted: contacts.filter(c => c.status === 'contacted').length,
-          thisMonth: contacts.filter(c => c.created_at.startsWith(m)).length
+          total:     all.length,
+          new:       all.filter(c => c.status === 'new').length,
+          contacted: all.filter(c => c.status === 'contacted').length,
+          thisMonth: all.filter(c => c.created_at && c.created_at.startsWith(m)).length
         };
       },
       getUser(username) {
@@ -161,7 +243,7 @@ async function initDB() {
       }
     };
 
-    console.log('✅ Base de données locale (database.json) prête');
+    console.log('✅ Base locale (database.json) prête');
   }
 }
 
@@ -183,12 +265,10 @@ app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) return res.status(400).json({ error: 'Champs requis' });
-
     const admin = await db.getUser(username);
     if (!admin || !bcrypt.compareSync(password, admin.password))
       return res.status(401).json({ error: 'Identifiants incorrects' });
-
-    const token = jwt.sign({ id: admin.id, username: admin.username }, JWT_SECRET, { expiresIn: '8h' });
+    const token = jwt.sign({ id: admin.id || admin.username, username: admin.username }, JWT_SECRET, { expiresIn: '8h' });
     res.json({ success: true, token, username: admin.username });
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -202,7 +282,6 @@ app.post('/api/contacts', async (req, res) => {
       return res.status(400).json({ error: 'Nom, email et message sont requis' });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       return res.status(400).json({ error: 'Email invalide' });
-
     const contact = await db.addContact({ name, email, phone, company, service, message });
     res.status(201).json({ success: true, contact });
   } catch (e) {
@@ -254,12 +333,16 @@ app.get('/api/stats', auth, async (_req, res) => {
 // ─── START ────────────────────────────────────────────────────────────────────
 initDB().then(() => {
   app.listen(PORT, () => {
+    const dbLabel = process.env.FIREBASE_PROJECT_ID
+      ? 'Firestore ☁️ '
+      : process.env.DATABASE_URL ? 'PostgreSQL'
+      : 'JSON local  ';
     console.log(`
   ╔════════════════════════════════════════╗
   ║   🚀 NovaBnisit démarré               ║
   ║   📍 http://localhost:${PORT}              ║
-  ║   💾 DB: ${process.env.DATABASE_URL ? 'PostgreSQL ☁️ ' : 'JSON local    '}         ║
-  ║   🔑 Admin: admin / admin123          ║
+  ║   💾 DB: ${dbLabel}         ║
+  ║   🔑 admin / admin123                 ║
   ╚════════════════════════════════════════╝
     `);
   });
